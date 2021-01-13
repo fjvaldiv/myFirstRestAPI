@@ -57,11 +57,25 @@ def get_users():
         # 200 is the default code for a normal response
         return resp
 
-@app.route('/users/<id>')
+@app.route('/users/<id>', methods = ['DELETE'])
 def get_user(id):
-   if id :
-      for user in users['users_list']:
-        if user['id'] == id:
-           return user
-      return ({})
-   return users
+    if id:
+        if request.method == 'DELETE':
+            for user in users['users_list']:
+                if user['id'] == id:
+                    users['users_list'].remove(user)
+        else:
+            for user in users['users_list']:
+                if user['id'] == id:
+                    return user
+            return ({})
+    return users
+
+@app.route('/users/<name>/<job>')
+def get_exact_user(name, job):
+    if name and job:
+        for user in users['users_list']:
+            if user['name'] == name and user['job'] == job:
+                return user
+        return ({})
+    return users
